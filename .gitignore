@@ -1,0 +1,13 @@
+﻿
+/vsproc
+
+/pro/DebugConfig
+/pro/Listings
+/pro/Objects
+/pro/RTE
+/pro/*.uvoptx
+/pro/*.uvguix.*
+/pro/JLinkLog.txt
+/pro/JLinkSettings.ini
+
+*.tmp
