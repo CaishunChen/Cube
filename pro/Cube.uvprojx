@@ -349,7 +349,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>1</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -369,7 +369,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\inc;..\inc\driver;..\lib\cmsis\inc;..\lib\stm32f411\inc</IncludePath>
+              <IncludePath>..\inc;..\inc\driver;..\inc\xtos;..\lib\cmsis\inc;..\lib\stm32f411\inc;..\lib\utils\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -464,6 +464,26 @@
               <FileName>motor.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\driver\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>system.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driver\system.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>libutils</GroupName>
+          <Files>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>utils.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\utils.c</FilePath>
             </File>
           </Files>
         </Group>
