@@ -1,11 +1,11 @@
 #pragma once
 
-#include <types.h>
+#include <stm32f411.h>
 
 extern uint32 sys_ms;
 
 /* Ã¿ºÁÃë¼ÆÊý */
-#define SYS_TICK_PMS   168000
+#define SYS_TICK_PMS   100000
 
 struct sys_time {
     uint32 ms;

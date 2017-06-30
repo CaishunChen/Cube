@@ -361,7 +361,7 @@
             <wLevel>2</wLevel>
             <uThumb>0</uThumb>
             <uSurpInc>0</uSurpInc>
-            <uC99>0</uC99>
+            <uC99>1</uC99>
             <useXO>0</useXO>
             <v6Lang>1</v6Lang>
             <v6LangP>1</v6LangP>
@@ -369,7 +369,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\inc;..\inc\driver;..\inc\xtos;..\lib\cmsis\inc;..\lib\stm32f411\inc;..\lib\utils\inc;..\lib\imu\inc</IncludePath>
+              <IncludePath>..\inc;..\inc\driver;..\inc\xtos;..\lib\cmsis\inc;..\lib\stm32f411\inc;..\lib\utils\inc;..\lib\imu\inc;.\app</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -421,6 +421,11 @@
               <FileName>interrupts.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app\interrupts.c</FilePath>
+            </File>
+            <File>
+              <FileName>pose.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\pose.c</FilePath>
             </File>
           </Files>
         </Group>
