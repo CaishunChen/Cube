@@ -369,7 +369,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>..\inc;..\inc\driver;..\inc\xtos;..\lib\cmsis\inc;..\lib\stm32f411\inc;..\lib\utils\inc</IncludePath>
+              <IncludePath>..\inc;..\inc\driver;..\inc\xtos;..\lib\cmsis\inc;..\lib\stm32f411\inc;..\lib\utils\inc;..\lib\imu\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -410,6 +410,21 @@
       </TargetOption>
       <Groups>
         <Group>
+          <GroupName>app</GroupName>
+          <Files>
+            <File>
+              <FileName>main.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\main.c</FilePath>
+            </File>
+            <File>
+              <FileName>interrupts.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\interrupts.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
           <GroupName>libstm32</GroupName>
           <Files>
             <File>
@@ -435,21 +450,6 @@
           </Files>
         </Group>
         <Group>
-          <GroupName>app</GroupName>
-          <Files>
-            <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>interrupts.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\interrupts.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
           <GroupName>libcmsis</GroupName>
         </Group>
         <Group>
@@ -470,6 +470,11 @@
               <FileType>1</FileType>
               <FilePath>..\driver\system.c</FilePath>
             </File>
+            <File>
+              <FileName>fakei2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driver\fakei2c.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -484,6 +489,26 @@
               <FileName>utils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\utils\src\utils.c</FilePath>
+            </File>
+            <File>
+              <FileName>matrix.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\matrix.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>libimu</GroupName>
+          <Files>
+            <File>
+              <FileName>imu.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\imu\src\imu.c</FilePath>
+            </File>
+            <File>
+              <FileName>mpu6050.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\imu\src\mpu6050.c</FilePath>
             </File>
           </Files>
         </Group>
