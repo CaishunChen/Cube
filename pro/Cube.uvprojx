@@ -427,6 +427,21 @@
               <FileType>1</FileType>
               <FilePath>.\app\pose.c</FilePath>
             </File>
+            <File>
+              <FileName>command.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\command.c</FilePath>
+            </File>
+            <File>
+              <FileName>cube.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\cube.c</FilePath>
+            </File>
+            <File>
+              <FileName>gVariables.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\gVariables.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -451,6 +466,11 @@
               <FileName>stm32f4xx_timer.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\stm32f411\src\stm32f4xx_timer.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\stm32f411\src\stm32f4xx_usart.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -480,6 +500,11 @@
               <FileType>1</FileType>
               <FilePath>..\driver\fakei2c.c</FilePath>
             </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driver\usart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -499,6 +524,11 @@
               <FileName>matrix.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\utils\src\matrix.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\queue.c</FilePath>
             </File>
           </Files>
         </Group>
