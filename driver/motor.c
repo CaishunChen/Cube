@@ -100,18 +100,18 @@ static void motor_pwmios_init(void) {
     RCC->AHB1ENR.bits.gpioa = 1;
     RCC->AHB1ENR.bits.gpiob = 1;
     // 功能选择
-    GPIOA->AFR.bits.pin0 = GPIO_AF1_TIM2;
-    GPIOA->AFR.bits.pin1 = GPIO_AF1_TIM2;
-    GPIOA->AFR.bits.pin2 = GPIO_AF3_TIM9;
-    GPIOA->AFR.bits.pin3 = GPIO_AF3_TIM9;
-    GPIOB->AFR.bits.pin0 = GPIO_AF2_TIM3;
-    GPIOB->AFR.bits.pin1 = GPIO_AF2_TIM3;
-    GPIOB->AFR.bits.pin4 = GPIO_AF2_TIM3;
-    GPIOB->AFR.bits.pin5 = GPIO_AF2_TIM3;
-    GPIOB->AFR.bits.pin6 = GPIO_AF2_TIM4;
-    GPIOB->AFR.bits.pin7 = GPIO_AF2_TIM4;
-    GPIOB->AFR.bits.pin8 = GPIO_AF2_TIM4;
-    GPIOB->AFR.bits.pin9 = GPIO_AF2_TIM4;
+    GPIOA->AFR.bits.pin0 = GPIO_AF_TIM2;
+    GPIOA->AFR.bits.pin1 = GPIO_AF_TIM2;
+    GPIOA->AFR.bits.pin2 = GPIO_AF_TIM9;
+    GPIOA->AFR.bits.pin3 = GPIO_AF_TIM9;
+    GPIOB->AFR.bits.pin0 = GPIO_AF_TIM3;
+    GPIOB->AFR.bits.pin1 = GPIO_AF_TIM3;
+    GPIOB->AFR.bits.pin4 = GPIO_AF_TIM3;
+    GPIOB->AFR.bits.pin5 = GPIO_AF_TIM3;
+    GPIOB->AFR.bits.pin6 = GPIO_AF_TIM4;
+    GPIOB->AFR.bits.pin7 = GPIO_AF_TIM4;
+    GPIOB->AFR.bits.pin8 = GPIO_AF_TIM4;
+    GPIOB->AFR.bits.pin9 = GPIO_AF_TIM4;
     // 配置管脚
     struct gpio_pin_conf pincof;
     pincof.mode = GPIO_Mode_Af;

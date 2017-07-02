@@ -1,5 +1,6 @@
 #include <system.h>
 #include <led.h>
+#include <usart.h>
 #include <cube.h>
 #include <pose.h>
 
@@ -10,10 +11,13 @@ int main(void) {
     sys_init();
 
     led_init();
+    usart1_init(115200);
     cube_init();
     LED_2 = LED_OFF;
 
     config_interruts();
+
+    uart_send_str(USART1, "===========================\r\n");
 
     sys_delay_ms(1000);
     while (MPU6050_ERROR_NONE != mpu6050_init(&gMpu6050));
