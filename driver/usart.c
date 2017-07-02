@@ -1,5 +1,7 @@
 #include <stm32f411.h>
+#include <gVariables.h>
 #include <usart.h>
+#include <queue.h>
 
 /*
  * usart1_init - ³õÊ¼»¯´®¿Ú1
@@ -26,11 +28,17 @@ void usart1_init(uint32 baudrate) {
     GPIOA->PUPDR.bits.pin10 = GPIO_Pull_No;
 
     uart_init(USART1, baudrate);
+
+    init_queue(&gU1RxQ, gU1RxQ_Buf, CONFIG_USART_BUF_SIZE);
+}
+
+uint8 usart1_send_bytes(const uint8 *buf, uint32 len) {
+    uart_send_bytes(USART1, buf, len);
+    return 0;
 }
 
 void USART1_IRQHandler(void) {
     if (0 != USART1->SR.bits.RXNE) {
-        uint8 data = USART1->DR.bits.byte;
-        uart_send_byte(USART1, data);
+        enqueue(&gU1RxQ, USART1->DR.bits.byte);
     }
 }
