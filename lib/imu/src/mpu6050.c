@@ -103,7 +103,7 @@ uint8 mpu6050_init(struct mpu6050 *mpu) {
     Init_I2C(mpu->i2c);
 
     // 检测连接 不知道为啥需要读两次
-    //I2C_ReceiveDatas(mpu->i2c, &data, 1, mpu->addr, MPU6050_WHO_AM_I);
+    I2C_ReceiveDatas(mpu->i2c, &data, 1, mpu->addr, MPU6050_WHO_AM_I);
     I2C_ReceiveDatas(mpu->i2c, &data, 1, mpu->addr, MPU6050_WHO_AM_I);
     if (data != (mpu->addr >> 1))
         return MPU6050_ERROR_CONNECT_FAILED;
