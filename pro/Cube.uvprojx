@@ -511,11 +511,6 @@
           <GroupName>libutils</GroupName>
           <Files>
             <File>
-              <FileName>list.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\utils\src\list.c</FilePath>
-            </File>
-            <File>
               <FileName>utils.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\utils\src\utils.c</FilePath>
@@ -529,6 +524,11 @@
               <FileName>queue.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\utils\src\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>stdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\stdio.c</FilePath>
             </File>
           </Files>
         </Group>

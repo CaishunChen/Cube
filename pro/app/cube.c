@@ -1,4 +1,5 @@
 #include <cube.h>
+#include <gVariables.h>
 
 struct CubeDirCtrl gXDir = {
     &motor1,
@@ -19,6 +20,8 @@ struct CubeDirCtrl gZDir = {
  * cube_init - ≥ı ºªØCube
  */
 void cube_init(void) {
+    imu_init(&gFlightParam);
+
     motors_init();
 
     cube_disable_dir(&gXDir);

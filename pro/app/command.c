@@ -52,9 +52,10 @@ uint8 Response(uint16 code, uint8 *buf, uint16 len) {
 /*******************************************************/
 
 int Query_Id(void) {
-    uint16 id = 0x5555;
-    return Response(0x0000, (uint8*)&id, 2);
+    return Response(0x0000, "Cube", 4);
 }
+
+
 
 /*******************************************************/
 
