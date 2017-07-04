@@ -5,54 +5,57 @@
 #include <command.h>
 #include <cube.h>
 #include <timer.h>
+#include <mpu6050.h>
 
 #include <stdio.h>
 
 void config_interruts(void);
 
-uint8 data = 0;
+bool isStarted = FALSE;
 double fdt = 0;
 struct sys_time gTime1;
+uint8 data = 0;
 
 void ctrl_routine(void) {
-    data = mpu6050_read_uint8(&gMpu6050, 0x3A);
-    if (data & 0x01) {
-        fdt = sys_time_dis_fms(&gTime);
-        sys_get_time(&gTime);
+    if (!isStarted)
+        return;
 
-        mpu6050_update(&gMpu6050);
-        imu_update_quat(&(gMpu6050.fvalue), &gFlightParam, 0.001 * fdt);
-        imu_update_xyz(&(gMpu6050.fvalue), &gFlightParam, 0.001 * fdt);
-        imu_get_euler_angle(&gFlightParam, &gEularAngle);
-        printf("fdt = %f\r\n", fdt);
+    uint8 data = mpu6050_read_uint8(&gMpu6050, 0x3A);
+    if (data & 0x01) {
+        MPU6050_Pose();
     }
 }
 
+
 int main(void) {
     sys_init();
-
     led_init();
     usart1_init(115200);
+    /*
     timer_init(1000, 5000);
     control_func = ctrl_routine;
-
     cube_init();
     cmd_init(&gU1RxQ, usart1_send_bytes);
+    */
     LED_2 = LED_OFF;
-
     config_interruts();
 
     printf("=======%f==========\r\n", 12.4409);
-
-    sys_delay_ms(1000);
-    sys_get_time(&gTime);
     LED_2 = LED_ON;
 
+    uint8 err = MPU6050_Init();
+    if (err) {
+        printf("≥ı ºªØMPU6050¥ÌŒÛ: 0x%x", err);
+        while (1);
+    }
+
+    printf("=======%f==========\r\n", 0.031);
+    
     while (1) {
-        Parse_Command();
-        Exec_Command();
-        Clear_Command();
-        //sys_delay_ms(1);
+        data = mpu6050_read_uint8(&gMpu6050, 0x3A);
+        if (data & 0x01) {
+            MPU6050_Pose();
+        }
     }
 }
 

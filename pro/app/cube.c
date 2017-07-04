@@ -1,5 +1,6 @@
 #include <cube.h>
 #include <gVariables.h>
+#include <stdio.h>
 
 struct CubeDirCtrl gXDir = {
     &motor1,
@@ -20,7 +21,12 @@ struct CubeDirCtrl gZDir = {
  * cube_init - 初始化Cube
  */
 void cube_init(void) {
-    imu_init(&gFlightParam);
+    //imu_init(&gFlightParam);
+    uint8 err = MPU6050_Init();
+    if (err) {
+        printf("初始化MPU6050错误: 0x%x", err);
+        while (1);
+    }
 
     motors_init();
 

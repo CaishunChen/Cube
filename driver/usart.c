@@ -44,8 +44,8 @@ void USART1_IRQHandler(void) {
         uint8 data = USART1->DR.bits.byte;
         uart_send_byte(USART1, data);
 
-        printf("\r\npitch=%f\r\n", gEularAngle.pitch);
-        printf("roll=%f\r\n", gEularAngle.roll);
-        printf("yaw=%f\r\n", gEularAngle.yaw);
+        printf("\r\npitch=%f\r\n", gImuValue.pitch);
+        printf("roll=%f\r\n", gImuValue.roll);
+        printf("yaw=%f\r\n", gImuValue.yaw);
     }
 }

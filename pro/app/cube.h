@@ -1,7 +1,7 @@
 #pragma once
 
 #include <motor.h>
-#include <imu.h>
+#include <MPU6050.h>
 
 
 struct cube {

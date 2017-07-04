@@ -7,9 +7,7 @@ usart_regs_t *gUart = USART1;
 Queue_T gU1RxQ;
 uint8 gU1RxQ_Buf[CONFIG_USART_BUF_SIZE + 1];
 
-struct flight_parameters gFlightParam;
-struct sys_time gTime;
-struct eular_angle gEularAngle;
+struct sys_time gTime;;
 
 /***********************************************************/
 /*                 i2c 函数和对象定义                       */
@@ -62,7 +60,7 @@ static void i2c_init(void) {
     i2c_scl_h();
 }
 
-static i2c_dev gI2C = {
+i2c_dev gI2C = {
     .scl_h = i2c_scl_h,
     .scl_l = i2c_scl_l,
     .sda_h = i2c_sda_h,
@@ -78,3 +76,6 @@ struct mpu6050 gMpu6050 = {
     .addr = 0xD0,
     .i2c = &gI2C
 };
+
+struct mpu6050_measure_value gImuValue;
+
