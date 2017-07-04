@@ -2,6 +2,7 @@
 #include <gVariables.h>
 #include <usart.h>
 #include <queue.h>
+#include <stdio.h>
 
 /*
  * usart1_init - ³õÊ¼»¯´®¿Ú1
@@ -42,5 +43,9 @@ void USART1_IRQHandler(void) {
         //enqueue(&gU1RxQ, USART1->DR.bits.byte);
         uint8 data = USART1->DR.bits.byte;
         uart_send_byte(USART1, data);
+
+        printf("\r\npitch=%f\r\n", gEularAngle.pitch);
+        printf("roll=%f\r\n", gEularAngle.roll);
+        printf("yaw=%f\r\n", gEularAngle.yaw);
     }
 }

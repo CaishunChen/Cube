@@ -1,6 +1,8 @@
 #include <gVariables.h>
 #include <fakei2c.h>
 
+
+timer_regs_t *gTimer = TIM10;
 usart_regs_t *gUart = USART1;
 Queue_T gU1RxQ;
 uint8 gU1RxQ_Buf[CONFIG_USART_BUF_SIZE + 1];

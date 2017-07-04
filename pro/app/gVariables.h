@@ -8,6 +8,7 @@
 #include <mpu6050.h>
 
 
+extern timer_regs_t *gTimer;
 extern usart_regs_t *gUart;
 extern Queue_T gU1RxQ;
 extern uint8 gU1RxQ_Buf[CONFIG_USART_BUF_SIZE + 1];

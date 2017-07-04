@@ -4,6 +4,7 @@
 #include <usart.h>
 #include <command.h>
 #include <cube.h>
+#include <timer.h>
 
 #include <stdio.h>
 
@@ -18,6 +19,7 @@ int main(void) {
 
     led_init();
     usart1_init(115200);
+    timer_init(10000, 10000);
 
     cube_init();
     cmd_init(&gU1RxQ, usart1_send_bytes);

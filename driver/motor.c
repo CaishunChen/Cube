@@ -42,7 +42,6 @@ static void motor_timpwm_init(timer_regs_t * tim, uint8 channel, uint16 pres, ui
     tim->PSC = pres - 1;
     tim->ARR = period;
     tim->EGR.bits.UG = 1;
-    tim->DIER.bits.UIE = 1;
     tim->CR1.bits.ARPE = 1;
 
     union timer_chanel_mode cfg;
