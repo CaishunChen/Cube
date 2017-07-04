@@ -423,9 +423,19 @@
               <FilePath>.\app\interrupts.c</FilePath>
             </File>
             <File>
-              <FileName>pose.c</FileName>
+              <FileName>command.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\app\pose.c</FilePath>
+              <FilePath>.\app\command.c</FilePath>
+            </File>
+            <File>
+              <FileName>cube.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\cube.c</FilePath>
+            </File>
+            <File>
+              <FileName>gVariables.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\gVariables.c</FilePath>
             </File>
             <File>
               <FileName>cube.c</FileName>
@@ -457,6 +467,11 @@
               <FileType>1</FileType>
               <FilePath>..\lib\stm32f411\src\stm32f4xx_timer.c</FilePath>
             </File>
+            <File>
+              <FileName>stm32f4xx_usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\stm32f411\src\stm32f4xx_usart.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -485,16 +500,21 @@
               <FileType>1</FileType>
               <FilePath>..\driver\fakei2c.c</FilePath>
             </File>
+            <File>
+              <FileName>usart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driver\usart.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\driver\timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
           <GroupName>libutils</GroupName>
           <Files>
-            <File>
-              <FileName>list.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\lib\utils\src\list.c</FilePath>
-            </File>
             <File>
               <FileName>utils.c</FileName>
               <FileType>1</FileType>
@@ -504,6 +524,16 @@
               <FileName>matrix.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\utils\src\matrix.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>stdio.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\stdio.c</FilePath>
             </File>
           </Files>
         </Group>

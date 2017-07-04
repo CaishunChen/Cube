@@ -1,6 +1,20 @@
-#include <pose.h>
+#include <gVariables.h>
+#include <fakei2c.h>
 
 
+timer_regs_t *gTimer = TIM10;
+usart_regs_t *gUart = USART1;
+Queue_T gU1RxQ;
+uint8 gU1RxQ_Buf[CONFIG_USART_BUF_SIZE + 1];
+
+struct flight_parameters gFlightParam;
+struct sys_time gTime;
+struct eular_angle gEularAngle;
+
+/***********************************************************/
+/*                 i2c 函数和对象定义                       */
+/* PB10 -> SCL, PB3 -> SDA                                 */
+/***********************************************************/
 static void i2c_scl_h(void) {
     PBout(10) = 1;
 }
@@ -28,9 +42,7 @@ static void i2c_set_sda_out(void) {
 static void i2c_set_sda_in(void) {
     GPIOB->MODER.bits.pin3 = GPIO_Mode_In;
 }
-/*
-* PB10 -> SCL, PB3 -> SDA
-*/
+
 static void i2c_init(void) {
     RCC->AHB1ENR.bits.gpiob = 1;
 
@@ -66,7 +78,3 @@ struct mpu6050 gMpu6050 = {
     .addr = 0xD0,
     .i2c = &gI2C
 };
-
-
-
-

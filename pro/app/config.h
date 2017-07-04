@@ -1,0 +1,5 @@
+#pragma once
+
+#define CONFIG_USART_BRATE 115200
+#define CONFIG_USART_BUF_SIZE 512
+

@@ -1,13 +1,17 @@
 #include <imu.h>
 #include <math.h>
 #include <matrix.h>
+#include <mpu6050.h>
+#include <gVariables.h>
 
 /*
  * imu_reset_quat - 初始对准
  *
  * @param: 飞行参数
  */
-void imu_init_param(struct flight_parameters *param) {
+void imu_init(struct flight_parameters *param) {
+    while (MPU6050_ERROR_NONE != mpu6050_init(&gMpu6050));
+
     param->q[0] = 1;
     param->q[1] = 0;
     param->q[2] = 0;
@@ -18,25 +22,54 @@ void imu_init_param(struct flight_parameters *param) {
     param->r[2] = 0;
 }
 /*
- * imu_update_quat - 更新四元数
+ * imu_update_quat - 更新四元数,用加速度计补偿陀螺仪,互补滤波
  *
  * @ag: imu数据
  * @param: 飞行参数
  * @dt: 时间间隔
  */
+#define KP  2.0
+#define KI  0.005
+static double exInt = 0;
+static double eyInt = 0;
+static double ezInt = 0;
 void imu_update_quat(const struct imu_6x_double *ag, struct flight_parameters *param, double dt) {
+    double ax = ag->ax;
+    double ay = ag->ay;
+    double az = ag->az;
     double gx = ag->gx;
     double gy = ag->gy;
     double gz = ag->gz;
     double hdt = 0.5 * dt;
     double *q = param->q;
 
+    double norm = 1.0 / sqrt(ax*ax + ay*ay + az*az);
+    ax *= norm;
+    ay *= norm;
+    az *= norm;
+
+    double vx = 2 * (q[1] * q[3] - q[0] * q[2]);
+    double vy = 2 * (q[0] * q[1] + q[2] * q[3]);
+    double vz = q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3];
+
+    double ex = ay * vz - az * vy;
+    double ey = az * vx - ax * vz;
+    double ez = ax * vy - ay * vx;
+
+    exInt += ex * KI;
+    eyInt += ey * KI;
+    ezInt += ez * KI;
+
+    gx += ex * KP + exInt;
+    gy += ey * KP + eyInt;
+    gz += ez * KP + ezInt;
+
     q[0] += (-q[1] * gx - q[2] * gy - q[3] * gz) * hdt;
     q[1] += (q[0] * gx + q[2] * gz - q[3] * gy) * hdt;
     q[2] += (q[0] * gy - q[1] * gz + q[3] * gx) * hdt;
     q[3] += (q[0] * gz + q[1] * gy - q[2] * gx) * hdt;
 
-    double norm = 1 / sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
+    norm = 1 / sqrt(q[0]*q[0] + q[1]*q[1] + q[2]*q[2] + q[3]*q[3]);
     q[0] *= norm;
     q[1] *= norm;
     q[2] *= norm;

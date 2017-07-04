@@ -61,7 +61,7 @@ struct eular_angle {
 *
 * @param: 飞行参数
 */
-void imu_init_param(struct flight_parameters *param);
+void imu_init(struct flight_parameters *param);
 /*
  * imu_update_quat - 更新四元数
  *
