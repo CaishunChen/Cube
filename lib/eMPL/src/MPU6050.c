@@ -3,7 +3,7 @@
 #include <stm32f4xx_rcc.h>
 #include <gVariables.h>
 
-#include <inv_mpu.h> //st.chip_cfg.sample_rate & DEFAULT_MPU_HZ就是在此处进行了设定
+#include <inv_mpu.h>
 #include <inv_mpu_dmp_motion_driver.h>
 #include <stdio.h>
 #include <math.h>
@@ -23,7 +23,6 @@ static signed char gyro_orientation[9] = {-1, 0, 0,
                                            0,-1, 0,
                                            0, 0, 1};//roll和pitch都是反的，yaw是正的
 
-																					 
 //float magOffset[3] = { (MAG0MAX + MAG0MIN) / 2, (MAG1MAX + MAG1MIN) / 2, (MAG2MAX + MAG2MIN) / 2 };
 static  unsigned short inv_row_2_scale(const signed char *row)
 {
@@ -92,18 +91,6 @@ static bool run_self_test(void) {
         return FALSE;
     }
 
-}
-
-
-
-uint8 i2c_write(uint8 addr, uint8 reg, uint8 len, uint8* data) {
-    I2C_SendDatas(&gI2C, data, len, addr, reg);
-    return 0;
-}
-
-uint8 i2c_read(uint8 addr, uint8 reg, uint8 len, uint8 *buf) {
-    I2C_ReceiveDatas(&gI2C, buf, len, addr, reg);
-    return 0;
 }
 
 uint8 mpu6050_read_uint8(struct mpu6050 *mpu, uint8 reg) {

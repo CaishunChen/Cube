@@ -6,7 +6,7 @@
 #include <math.h>
 #include <mpu6050.h>
 #include <system.h>
-
+#include <gVariables.h>
 #include "inv_mpu.h"
 #include "inv_mpu_dmp_motion_driver.h"
 #include "dmpKey.h"
@@ -25,85 +25,25 @@
  * min(int a, int b)
  */
 #define MPU6050
-#define MOTION_DRIVER_TARGET_MSP430
-//#define st.hw->addr  0x69
 
-#if defined MOTION_DRIVER_TARGET_MSP430
-/*#include "msp430.h"
-#include "msp430_i2c.h"
-#include "msp430_clock.h"
-#include "msp430_interrupt.h" */
+uint8 i2c_write(uint8 addr, uint8 reg, uint8 len, uint8* data) {
+    I2C_SendDatas(&gI2C, data, len, addr, reg);
+    return 0;
+}
+
+uint8 i2c_read(uint8 addr, uint8 reg, uint8 len, uint8 *buf) {
+    I2C_ReceiveDatas(&gI2C, buf, len, addr, reg);
+    return 0;
+}
 
 void delay_ms(uint16 ms) {
     sys_delay_ms(ms);
 }
 
-
-#define get_ms      get_ms
-
-//static int reg_int_cb(struct int_param_s *int_param)
-//{
-//    /*return msp430_reg_int_cb(int_param->cb, int_param->pin, int_param->lp_exit,
-//        int_param->active_low);*/
-//		return 0;
-//}	  
-//#define log_i(...)     do {} while (0)
-//#define log_e(...)     do {} while (0)
-#define log_e    printf
-#define log_i    printf
-/* labs is already defined by TI's toolchain. */
-/* fabs is for doubles. fabsf is for floats. */
+#define log_e       printf
+#define log_i       printf
 #define fabs        fabsf
-#define min(a,b) ((a<b)?a:b)
-
-#elif defined EMPL_TARGET_MSP430
-#include "msp430.h"
-#include "msp430_i2c.h"
-#include "msp430_clock.h"
-#include "msp430_interrupt.h"
-#include "log.h"
-#define i2c_write   msp430_i2c_write
-#define i2c_read    msp430_i2c_read
-#define delay_ms    msp430_delay_ms
-#define get_ms      msp430_get_clock_ms
-static inline int reg_int_cb(struct int_param_s *int_param)
-{
-    return msp430_reg_int_cb(int_param->cb, int_param->pin, int_param->lp_exit,
-        int_param->active_low);
-}
-#define log_i       MPL_LOGI
-#define log_e       MPL_LOGE
-/* labs is already defined by TI's toolchain. */
-/* fabs is for doubles. fabsf is for floats. */
-#define fabs        fabsf
-#define min(a,b) ((a<b)?a:b)
-#elif defined EMPL_TARGET_UC3L0
-/* Instead of using the standard TWI driver from the ASF library, we're using
- * a TWI driver that follows the slave address + register address convention.
- */
-#include "twi.h"
-#include "delay.h"
-#include "sysclk.h"
-#include "log.h"
-#include "sensors_xplained.h"
-#include "uc3l0_clock.h"
-#define i2c_write(a, b, c, d)   twi_write(a, b, d, c)
-#define i2c_read(a, b, c, d)    twi_read(a, b, d, c)
-/* delay_ms is a function already defined in ASF. */
-#define get_ms  uc3l0_get_clock_ms
-static inline int reg_int_cb(struct int_param_s *int_param)
-{
-    sensor_board_irq_connect(int_param->pin, int_param->cb, int_param->arg);
-    return 0;
-}
-#define log_i       MPL_LOGI
-#define log_e       MPL_LOGE
-/* UC3 is a 32-bit processor, so abs and labs are equivalent. */
-#define labs        abs
-#define fabs(x)     (((x)>0)?(x):-(x))
-#else
-//#error  Gyro driver is missing the system layer implementations.
-#endif
+#define min(a,b)    ((a<b)?a:b)
 
 #if !defined MPU6050 && !defined MPU9150 && !defined MPU6500 && !defined MPU9250
 //#error  Which gyro are you using? Define MPUxxxx in your compiler options.
