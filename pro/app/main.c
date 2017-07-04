@@ -25,7 +25,7 @@ int main(void) {
 
     config_interruts();
 
-    printf("===================\r\n");
+    printf("=======%f==========\r\n", 12.4409);
 
     sys_delay_ms(1000);
     sys_get_time(&gTime);
@@ -41,11 +41,14 @@ int main(void) {
             imu_update_quat(&(gMpu6050.fvalue), &gFlightParam, 0.001 * fdt);
             imu_update_xyz(&(gMpu6050.fvalue), &gFlightParam, 0.001 * fdt);
             imu_get_euler_angle(&gFlightParam, &gEularAngle);
+            //printf("pitch=%f\r\n", gEularAngle.pitch);
+            //printf("roll=%f\r\n", gEularAngle.roll);
+            //printf("yaw=%f\r\n", gEularAngle.yaw);
         }
 
-        Parse_Command();
-        Exec_Command();
-        Clear_Command();
+        //Parse_Command();
+        //Exec_Command();
+        //Clear_Command();
         //sys_delay_ms(1);
     }
 }

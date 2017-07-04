@@ -39,6 +39,8 @@ uint8 usart1_send_bytes(const uint8 *buf, uint32 len) {
 
 void USART1_IRQHandler(void) {
     if (0 != USART1->SR.bits.RXNE) {
-        enqueue(&gU1RxQ, USART1->DR.bits.byte);
+        //enqueue(&gU1RxQ, USART1->DR.bits.byte);
+        uint8 data = USART1->DR.bits.byte;
+        uart_send_byte(USART1, data);
     }
 }

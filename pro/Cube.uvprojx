@@ -423,11 +423,6 @@
               <FilePath>.\app\interrupts.c</FilePath>
             </File>
             <File>
-              <FileName>pose.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\pose.c</FilePath>
-            </File>
-            <File>
               <FileName>command.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app\command.c</FilePath>
