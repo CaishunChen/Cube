@@ -19,9 +19,11 @@ void timer_init(uint16 pres, uint16 period) {
     gTimer->CR1.bits.CEN = 1;
 }
 
+void(*control_func)(void);
+
 void TIM1_UP_TIM10_IRQHandler(void) {
     if (1 == gTimer->SR.bits.UIF) {
-        printf("T\r\n");
+        control_func();
     }
     gTimer->SR.bits.UIF = 0;
 }
