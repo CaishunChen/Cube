@@ -432,6 +432,11 @@
               <FileType>1</FileType>
               <FilePath>.\app\gVariables.c</FilePath>
             </File>
+            <File>
+              <FileName>cube.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\app\cube.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -525,6 +530,11 @@
               <FileType>1</FileType>
               <FilePath>..\lib\utils\src\stdio.c</FilePath>
             </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\lib\utils\src\list.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -544,6 +554,26 @@
               <FileName>MPU6050.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\lib\eMPL\src\MPU6050.c</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>xtos</GroupName>
+          <Files>
+            <File>
+              <FileName>xtos.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\xtos\xtos.c</FilePath>
+            </File>
+            <File>
+              <FileName>xtos_time.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\xtos\xtos_time.c</FilePath>
+            </File>
+            <File>
+              <FileName>xtos_asm.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>..\xtos\xtos_asm.s</FilePath>
             </File>
           </Files>
         </Group>

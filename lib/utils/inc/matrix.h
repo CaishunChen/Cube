@@ -2,6 +2,7 @@
 
 #include <utils.h>
 
+
 /* w = u + v */
 void vector3d_add(const double *u, const double *v, double *w);
 /* u += v */
@@ -22,4 +23,5 @@ void vector3d_mul_(double *u, double c);
 void matrix3d_lmul_vector(const double *m, const double *v, double *out);
 /* m = m^T */
 void matrix3d_transpose(double *m);
+
 

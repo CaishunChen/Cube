@@ -1,6 +1,7 @@
 #include <system.h>
 #include <stm32f411.h>
 
+#define XTOS
 #ifdef XTOS
 #include <xtos.h>
 #endif

@@ -3,9 +3,10 @@
 #include <rt_misc.h>
 
 #include <stm32f411.h>
-#include <gVariables.h>
 
 #pragma import(__use_no_semihosting_swi)
+
+extern usart_regs_t *gUart;
 
 int SendChar(int ch) {
     uart_send_byte(gUart, ch);
