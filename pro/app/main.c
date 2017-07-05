@@ -28,12 +28,14 @@ void ctrl_routine(void) {
 
 
 int main(void) {
+    isStarted = FALSE;
     sys_init();
     led_init();
     usart1_init(115200);
-    /*
+
     timer_init(1000, 5000);
     control_func = ctrl_routine;
+    /*
     cube_init();
     cmd_init(&gU1RxQ, usart1_send_bytes);
     */
@@ -50,12 +52,12 @@ int main(void) {
     }
 
     printf("=======%f==========\r\n", 0.031);
-    
+    isStarted = TRUE;
     while (1) {
-        data = mpu6050_read_uint8(&gMpu6050, 0x3A);
-        if (data & 0x01) {
-            MPU6050_Pose();
-        }
+        //data = mpu6050_read_uint8(&gMpu6050, 0x3A);
+        //if (data & 0x01) {
+        //    MPU6050_Pose();
+        //}
     }
 }
 
