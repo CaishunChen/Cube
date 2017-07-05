@@ -2,7 +2,7 @@
 #include <stm32f411.h>
 #include <stm32f4xx_rcc.h>
 #include <gVariables.h>
-
+#include <matrix.h>
 #include <inv_mpu.h>
 #include <inv_mpu_dmp_motion_driver.h>
 #include <stdio.h>
@@ -187,6 +187,7 @@ void MPU6050_cal_quat(struct mpu6050_measure_value *v) {
     v->q[2] = (float)gImuValue.quat[2] / q30;
     v->q[3] = (float)gImuValue.quat[3] / q30;
 }
+
 /*
  * MPU6050_cal_rpy - 计算姿态角
  */
@@ -202,6 +203,19 @@ void MPU6050_cal_rpy(struct mpu6050_measure_value *v) {
         v->pitch = tmp;
 
     tmp = atan2(2 * (q[1] * q[2] + q[0] * q[3]), q[0] * q[0] + q[1] * q[1] - q[2] * q[2] - q[3] * q[3]) * RAD_TO_DEG;	//yaw	,单位：度
+    if (fabs(tmp) <= 180)
+        v->yaw = tmp;
+}
+void MPU6050_cal_ryp2(struct mpu6050_measure_value *v) {
+    float tmp = atan2(-Matrix3fCell(v->m, 1, 2), Matrix3fCell(v->m, 2, 2));
+    if (fabs(tmp) <= 90)
+        v->roll = tmp;
+
+    tmp = asin(Matrix3fCell(v->m, 0, 2));
+    if (fabs(tmp) <= 90)
+        v->pitch = tmp;
+
+    tmp = atan2(-Matrix3fCell(v->m, 0, 1), Matrix3fCell(v->m, 0, 0));
     if (fabs(tmp) <= 180)
         v->yaw = tmp;
 }
@@ -259,7 +273,11 @@ void MPU6050_Pose(void) {
         return;
 
     MPU6050_cal_quat(&gImuValue);
+
+    quat4f_to_matrix3f(gImuValue.q, gImuValue.m);
+
     MPU6050_cal_rpy(&gImuValue);
+    MPU6050_cal_ryp2(&gImuValue);
     MPU6050_cal_rpy_rate(&gImuValue);
     MPU6050_cal_body_acc(&gImuValue);
 

@@ -14,10 +14,15 @@ struct mpu6050_measure_value {
     long quat[4];
 
     float q[4];
+    float m[9];     // Ðý×ª¾ØÕó
 
     float roll;
     float pitch;
     float yaw;
+
+    float roll2;
+    float pitch2;
+    float yaw2;
 
     float roll_rate;
     float pitch_rate;
