@@ -1,41 +1,12 @@
 #include <stm32f4xx_rcc.h>
 #include <stm32f4xx_gpio.h>
+#include <gVariables.h>
 #include <motor.h>
 
 /* TODO: 以参数的形式存在 */
 #define Motor_Pwm_Pres 500
 #define Motor_Pwm_Period 100
 
-struct MotorCtrl motor1 = {
-    .pwm1 = (uint32*)&(TIM2->CCR1),
-    .pwm2 = (uint32*)&(TIM2->CCR2),
-    .en = (volatile unsigned long *)&Motor1_Switch
-};
-struct MotorCtrl motor2 = {
-    .pwm1 = (uint32*)&(TIM9->CCR1),
-    .pwm2 = (uint32*)&(TIM9->CCR2),
-    .en = (volatile unsigned long *)&Motor2_Switch
-};
-struct MotorCtrl motor3 = {
-    .pwm1 = (uint32*)&(TIM3->CCR3),
-    .pwm2 = (uint32*)&(TIM3->CCR4),
-    .en = (volatile unsigned long *)&Motor3_Switch
-};
-struct MotorCtrl motor4 = {
-    .pwm1 = (uint32*)&(TIM3->CCR1),
-    .pwm2 = (uint32*)&(TIM3->CCR2),
-    .en = (volatile unsigned long *)&Motor4_Switch
-};
-struct MotorCtrl motor5 = {
-    .pwm1 = (uint32*)&(TIM4->CCR1),
-    .pwm2 = (uint32*)&(TIM4->CCR2),
-    .en = (volatile unsigned long *)&Motor5_Switch
-};
-struct MotorCtrl motor6 = {
-    .pwm1 = (uint32*)&(TIM4->CCR3),
-    .pwm2 = (uint32*)&(TIM4->CCR4),
-    .en = (volatile unsigned long *)&Motor6_Switch
-};
 
 static void motor_timpwm_init(timer_regs_t * tim, uint8 channel, uint16 pres, uint16 period) {
     tim->CR1.bits.DIR = TIM_COUNT_DIR_UP;
@@ -141,6 +112,13 @@ static void motor_gpios_init(void) {
     Motor5_Switch = 0;
     Motor6_Switch = 0;
 }
+
+static void motor_set_pwm_channel(struct MotorCtrl *m, uint32 *pwm1, uint32 *pwm2, volatile unsigned long *sw) {
+    m->pwm1 = pwm1;
+    m->pwm2 = pwm2;
+    m->en = sw;
+}
+
 /*
  * motors_init - 初始化电机
  */
@@ -148,7 +126,16 @@ void motors_init(void) {
     motor_gpios_init();
     motor_pwmios_init();
     motor_timers_init();
+
+    motor_set_pwm_channel(&gMotor[0], (uint32*)&(TIM2->CCR1), (uint32*)&(TIM2->CCR2), (volatile unsigned long *)&Motor1_Switch);
+    motor_set_pwm_channel(&gMotor[1], (uint32*)&(TIM9->CCR1), (uint32*)&(TIM9->CCR2), (volatile unsigned long *)&Motor2_Switch);
+    motor_set_pwm_channel(&gMotor[2], (uint32*)&(TIM3->CCR3), (uint32*)&(TIM3->CCR4), (volatile unsigned long *)&Motor3_Switch);
+    motor_set_pwm_channel(&gMotor[3], (uint32*)&(TIM3->CCR1), (uint32*)&(TIM3->CCR2), (volatile unsigned long *)&Motor4_Switch);
+    motor_set_pwm_channel(&gMotor[4], (uint32*)&(TIM4->CCR1), (uint32*)&(TIM4->CCR2), (volatile unsigned long *)&Motor5_Switch);
+    motor_set_pwm_channel(&gMotor[5], (uint32*)&(TIM4->CCR3), (uint32*)&(TIM4->CCR4), (volatile unsigned long *)&Motor6_Switch);
 }
+
+
 /*
  * motors_enable - 开启电机
  *

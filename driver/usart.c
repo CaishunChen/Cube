@@ -3,7 +3,7 @@
 #include <usart.h>
 #include <queue.h>
 #include <stdio.h>
-
+#include <cube.h>
 /*
  * usart1_init - ³õÊ¼»¯´®¿Ú1
  *
@@ -38,6 +38,15 @@ uint8 usart1_send_bytes(const uint8 *buf, uint32 len) {
     return 0;
 }
 
+void _enable_motor(uint8 id) {
+    for (int i = 0; i < 6; i++) {
+        motor_disable(&gMotor[i]);
+    }
+    motor_enable(&gMotor[id]);
+}
+
+
+
 extern float fdt;
 extern float gvx;
 extern float gvy;
@@ -64,6 +73,14 @@ void USART1_IRQHandler(void) {
         if ('c' == data) {
             gImuValue.vx = 0.0f;
             gImuValue.vy = 0.0f;
+        }
+
+        if (('1' <= data) && (data <= '6'))
+            _enable_motor(data - '1');
+        if ('0' == data) {
+            for (int i = 0; i < 6; i++) {
+                motor_disable(&gMotor[i]);
+            }
         }
 
     }

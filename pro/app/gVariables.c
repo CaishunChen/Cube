@@ -81,3 +81,22 @@ struct mpu6050 gMpu6050 = {
 
 struct mpu6050_measure_value gImuValue;
 
+/***********************************************************/
+/*                          µç»ú                           */
+/***********************************************************/
+struct MotorCtrl gMotor[6];
+struct CubeDirCtrl gXDir = {
+    &gMotor[3],
+    &gMotor[2],
+    0.0
+};
+struct CubeDirCtrl gYDir = {
+    &gMotor[4],
+    &gMotor[2],
+    0.0
+};
+struct CubeDirCtrl gZDir = {
+    &gMotor[0],
+    &gMotor[5],
+    0.0
+};

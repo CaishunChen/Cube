@@ -5,6 +5,7 @@
 #include <config.h>
 #include <queue.h>
 #include <mpu6050.h>
+#include <cube.h>
 
 extern bool gCtrolStarted;
 
@@ -20,4 +21,11 @@ extern struct sys_time gTime;
 extern i2c_dev gI2C;
 extern struct mpu6050 gMpu6050;
 extern struct mpu6050_measure_value gImuValue;
+
+
+extern struct MotorCtrl gMotor[6];
+
+extern struct CubeDirCtrl gXDir;
+extern struct CubeDirCtrl gYDir;
+extern struct CubeDirCtrl gZDir;
 

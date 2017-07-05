@@ -56,10 +56,18 @@ int main(void) {
     timer_init(1000, 5000);
     control_func = ctrl_routine;
     sys_get_time(&gTime1);
+
     /*
+    motors_init();
+    for (int i = 0; i < 6; i++) {
+        motor_set_pwm_duty(&gMotor[i], -0.1);
+        motor_enable(&gMotor[i]);
+    }
+
     cube_init();
-    cmd_init(&gU1RxQ, usart1_send_bytes);
     */
+    cmd_init(&gU1RxQ, usart1_send_bytes);
+
     LED_2 = LED_OFF;
     config_interruts();
 
@@ -82,6 +90,7 @@ int main(void) {
         if (data & 0x01) {
             mpu6050_pose();
         }
+
     }
 }
 

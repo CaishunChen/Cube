@@ -2,32 +2,11 @@
 #include <gVariables.h>
 #include <stdio.h>
 
-struct CubeDirCtrl gXDir = {
-    &motor1,
-    &motor2,
-    0.0
-};
-struct CubeDirCtrl gYDir = {
-    &motor3,
-    &motor4,
-    0.0
-};
-struct CubeDirCtrl gZDir = {
-    &motor5,
-    &motor6,
-    0.0
-};
+
 /*
  * cube_init - 初始化Cube
  */
 void cube_init(void) {
-    //imu_init(&gFlightParam);
-    uint8 err = mpu6050_init();
-    if (err) {
-        printf("初始化MPU6050错误: 0x%x", err);
-        while (1);
-    }
-
     motors_init();
 
     cube_disable_dir(&gXDir);
@@ -42,8 +21,8 @@ void cube_init(void) {
 void cube_enable_dir(struct CubeDirCtrl *dir) {
     dir->en = TRUE;
 
-    motor_set_pwm_duty(dir->fmotor, 0.5);
-    motor_set_pwm_duty(dir->bmotor, 0.5);
+    motor_set_pwm_duty(dir->fmotor, -0.1);
+    motor_set_pwm_duty(dir->bmotor, -0.1);
     motor_enable(dir->fmotor);
     motor_enable(dir->bmotor);
 }
