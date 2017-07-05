@@ -9,6 +9,8 @@ uint8 gU1RxQ_Buf[CONFIG_USART_BUF_SIZE + 1];
 
 struct sys_time gTime;;
 
+bool gCtrolStarted = FALSE;
+
 /***********************************************************/
 /*                 i2c 函数和对象定义                       */
 /* PB10 -> SCL, PB3 -> SDA                                 */

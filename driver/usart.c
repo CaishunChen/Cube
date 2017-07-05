@@ -38,14 +38,33 @@ uint8 usart1_send_bytes(const uint8 *buf, uint32 len) {
     return 0;
 }
 
+extern float fdt;
+extern float gvx;
+extern float gvy;
 void USART1_IRQHandler(void) {
     if (0 != USART1->SR.bits.RXNE) {
         //enqueue(&gU1RxQ, USART1->DR.bits.byte);
         uint8 data = USART1->DR.bits.byte;
         uart_send_byte(USART1, data);
 
-        printf("\r\npitch=%f\r\n", gImuValue.pitch);
-        printf("roll=%f\r\n", gImuValue.roll);
-        printf("yaw=%f\r\n", gImuValue.yaw);
+        if ('b' == data) {
+            gImuValue.xn_acc_bias = gImuValue.xn_acc;
+            gImuValue.yn_acc_bias = gImuValue.yn_acc;
+            gImuValue.zn_acc_bias = gImuValue.zn_acc;
+
+            gCtrolStarted = TRUE;
+            printf("fdt = %f\tgvx = %f\tgvy = %f\r\n", fdt, gImuValue.vx, gImuValue.vy);
+            //printf("fdt = %f\tgrx = %f\tgry = %f\r\n", fdt, gImuValue.rx, gImuValue.ry);
+        }
+
+        if ('a' == data) {
+            printf("fdt = %f\tvx = %f\tvy = %f\r\n", fdt, gvx, gvy);
+        }
+
+        if ('c' == data) {
+            gImuValue.vx = 0.0f;
+            gImuValue.vy = 0.0f;
+        }
+
     }
 }

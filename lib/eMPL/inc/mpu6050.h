@@ -20,20 +20,33 @@ struct mpu6050_measure_value {
     float pitch;
     float yaw;
 
-    float roll2;
-    float pitch2;
-    float yaw2;
-
     float roll_rate;
     float pitch_rate;
     float yaw_rate;
 
-    float xaccb;    // 机体坐标系加速度
-    float yaccb;
-    float zaccb;
+    float xb_acc;    // 机体坐标系加速度
+    float yb_acc;
+    float zb_acc;
+
+    float xn_acc;    // 世界坐标系加速度
+    float yn_acc;
+    float zn_acc;
+
+    float xn_acc_bias;  // 世界坐标系下加速度计重力零偏
+    float yn_acc_bias;
+    float zn_acc_bias;
+
+    float vx;           // 速度
+    float vy;
+    float vz;
+
+    float rx;           // 位置
+    float ry;
+    float rz;
 };
 
-uint8 MPU6050_Init(void);
-void MPU6050_Pose(void);
+uint8 mpu6050_init(void);
+void mpu6050_calibrate(void);
+void mpu6050_pose(void);
 uint8 mpu6050_read_uint8(struct mpu6050 *mpu, uint8 reg);
 

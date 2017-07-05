@@ -12,18 +12,38 @@
 void config_interruts(void);
 
 bool isStarted = FALSE;
-double fdt = 0;
+
+
+float fdt = 0;
 struct sys_time gTime1;
 uint8 data = 0;
+
+
+float gvx = 0;
+float gvy = 0;
 
 void ctrl_routine(void) {
     if (!isStarted)
         return;
 
-    uint8 data = mpu6050_read_uint8(&gMpu6050, 0x3A);
-    if (data & 0x01) {
-        MPU6050_Pose();
+    struct sys_time time;
+    sys_get_time(&time);
+    fdt = sys_time_diff_fms(&gTime1, &time);
+    gTime1.ms = time.ms;
+    gTime1.us = time.us;
+
+    gvx = (gImuValue.xn_acc - gImuValue.xn_acc_bias) * fdt * 0.001f;
+    gvy = (gImuValue.yn_acc - gImuValue.yn_acc_bias) * fdt * 0.001f;
+
+    if (!gCtrolStarted) {
+        return;
     }
+
+    gImuValue.rx += gImuValue.vx * fdt * 0.001f;
+    gImuValue.ry += gImuValue.vy * fdt * 0.001f;
+
+    gImuValue.vx += gvx;
+    gImuValue.vy += gvy;
 }
 
 
@@ -35,6 +55,7 @@ int main(void) {
 
     timer_init(1000, 5000);
     control_func = ctrl_routine;
+    sys_get_time(&gTime1);
     /*
     cube_init();
     cmd_init(&gU1RxQ, usart1_send_bytes);
@@ -42,22 +63,25 @@ int main(void) {
     LED_2 = LED_OFF;
     config_interruts();
 
-    printf("=======%f==========\r\n", 12.4409);
+    //sys_delay_ms(10000);
+
+    printf("初始化MPU6050\r\n");
     LED_2 = LED_ON;
 
-    uint8 err = MPU6050_Init();
+    uint8 err = mpu6050_init();
     if (err) {
-        printf("初始化MPU6050错误: 0x%x", err);
+        printf("初始化MPU6050错误: 0x%x\r\n", err);
         while (1);
     }
 
-    printf("=======%f==========\r\n", 0.031);
+    printf("初始化MPU6050结束\r\n");
     isStarted = TRUE;
+
     while (1) {
-        //data = mpu6050_read_uint8(&gMpu6050, 0x3A);
-        //if (data & 0x01) {
-        //    MPU6050_Pose();
-        //}
+        data = mpu6050_read_uint8(&gMpu6050, 0x3A);
+        if (data & 0x01) {
+            mpu6050_pose();
+        }
     }
 }
 

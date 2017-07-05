@@ -24,7 +24,7 @@ void(*control_func)(void);
 void TIM1_UP_TIM10_IRQHandler(void) {
     if (1 == gTimer->SR.bits.UIF) {
         control_func();
+        gTimer->SR.bits.UIF = 0;
     }
-    gTimer->SR.bits.UIF = 0;
 }
 

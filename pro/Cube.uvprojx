@@ -428,11 +428,6 @@
               <FilePath>.\app\command.c</FilePath>
             </File>
             <File>
-              <FileName>cube.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\cube.c</FilePath>
-            </File>
-            <File>
               <FileName>gVariables.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\app\gVariables.c</FilePath>

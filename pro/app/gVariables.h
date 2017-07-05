@@ -6,6 +6,7 @@
 #include <queue.h>
 #include <mpu6050.h>
 
+extern bool gCtrolStarted;
 
 extern timer_regs_t *gTimer;
 extern usart_regs_t *gUart;

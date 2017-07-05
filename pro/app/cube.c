@@ -22,7 +22,7 @@ struct CubeDirCtrl gZDir = {
  */
 void cube_init(void) {
     //imu_init(&gFlightParam);
-    uint8 err = MPU6050_Init();
+    uint8 err = mpu6050_init();
     if (err) {
         printf("≥ı ºªØMPU6050¥ÌŒÛ: 0x%x", err);
         while (1);
