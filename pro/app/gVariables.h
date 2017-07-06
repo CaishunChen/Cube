@@ -20,7 +20,7 @@ extern struct sys_time gTime;
 
 extern i2c_dev gI2C;
 extern struct mpu6050 gMpu6050;
-extern struct mpu6050_measure_value gImuValue;
+extern struct cube gCube;
 
 
 extern struct MotorCtrl gMotor[6];

@@ -31,18 +31,18 @@ void ctrl_routine(void) {
     gTime1.ms = time.ms;
     gTime1.us = time.us;
 
-    gvx = (gImuValue.xn_acc - gImuValue.xn_acc_bias) * fdt * 0.001f;
-    gvy = (gImuValue.yn_acc - gImuValue.yn_acc_bias) * fdt * 0.001f;
+    gvx = (gCube.xn_acc - gCube.xn_acc_bias) * fdt * 0.001f;
+    gvy = (gCube.yn_acc - gCube.yn_acc_bias) * fdt * 0.001f;
 
     if (!gCtrolStarted) {
         return;
     }
 
-    gImuValue.rx += gImuValue.vx * fdt * 0.001f;
-    gImuValue.ry += gImuValue.vy * fdt * 0.001f;
+    gCube.rx += gCube.vx * fdt * 0.001f;
+    gCube.ry += gCube.vy * fdt * 0.001f;
 
-    gImuValue.vx += gvx;
-    gImuValue.vy += gvy;
+    gCube.vx += gvx;
+    gCube.vy += gvy;
 }
 
 /*******************************************/
@@ -58,20 +58,21 @@ static struct xtos_task_descriptor taskB;
 
 void taska() {
     while (1) {
+        LED_2 = LED_ON;
         data = mpu6050_read_uint8(&gMpu6050, 0x3A);
         if (data & 0x01) {
             mpu6050_pose();
         }
-        xtos_delay_ms(1000);
+        LED_2 = LED_OFF;
     }
 }
 
 void taskb() {
+    printf("\r\n sizeof(gCube) = %d\r\n", sizeof(gCube));
     while (1) {
-        LED_2 = LED_ON;
-        xtos_delay_ms(1000);
-        LED_2 = LED_OFF;
-        xtos_delay_ms(1000);
+        Parse_Command();
+        Exec_Command();
+        Clear_Command();
     }
 }
 /*******************************************/
@@ -82,7 +83,6 @@ int main(void) {
     led_init();
     usart1_init(115200);
 
-    
     timer_init(1000, 5000);
     control_func = ctrl_routine;
     sys_get_time(&gTime1);
@@ -93,23 +93,21 @@ int main(void) {
         motor_set_pwm_duty(&gMotor[i], -0.1);
         motor_enable(&gMotor[i]);
     }
-
+    */
     cube_init();
     cmd_init(&gU1RxQ, usart1_send_bytes);
-    */
-
     config_interruts();
 
-    printf("初始化MPU6050\r\n");
+    printf("initialize the mpu6050\r\n");
     LED_2 = LED_ON;
 
     uint8 err = mpu6050_init();
     if (err) {
-        printf("初始化MPU6050错误: 0x%x\r\n", err);
+        printf("error, initialize the mpu6050: 0x%x\r\n", err);
         while (1);
     }
 
-    printf("初始化MPU6050结束\r\n");
+    printf("mpu6050 initialized\r\n");
     isStarted = TRUE;
 
     xtos_init();

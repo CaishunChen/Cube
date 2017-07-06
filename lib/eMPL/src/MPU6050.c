@@ -172,18 +172,18 @@ uint8 mpu6050_init(void) {
 	if(mpu_set_dmp_state(1))
 		return 9;
 
-    gImuValue.vx = 0;
-    gImuValue.vy = 0;
-    gImuValue.vz = 0;
-    gImuValue.rx = 0;
-    gImuValue.ry = 0;
-    gImuValue.rz = 0;
+    gCube.vx = 0;
+    gCube.vy = 0;
+    gCube.vz = 0;
+    gCube.rx = 0;
+    gCube.ry = 0;
+    gCube.rz = 0;
     return 0;
 }
 /*
  * MPU6050_get_value - 读取传感器数值
  */
-int MPU6050_get_value(struct mpu6050_measure_value *v) {
+int MPU6050_get_value(struct cube *v) {
     short sensors;
     unsigned char more;
     unsigned long sensor_timestamp;
@@ -192,16 +192,16 @@ int MPU6050_get_value(struct mpu6050_measure_value *v) {
 /*
  * MPU6050_cal_quat - 换算四元数
  */
-void MPU6050_cal_quat(struct mpu6050_measure_value *v) {
-    v->q[0] = (float)gImuValue.quat[0] / q30;
-    v->q[1] = (float)gImuValue.quat[1] / q30;
-    v->q[2] = (float)gImuValue.quat[2] / q30;
-    v->q[3] = (float)gImuValue.quat[3] / q30;
+void MPU6050_cal_quat(struct cube *v) {
+    v->q[0] = (float)gCube.quat[0] / q30;
+    v->q[1] = (float)gCube.quat[1] / q30;
+    v->q[2] = (float)gCube.quat[2] / q30;
+    v->q[3] = (float)gCube.quat[3] / q30;
 }
 /*
 * MPU6050_cal_rotation_matrix - 计算旋转矩阵
 */
-void MPU6050_cal_rotation_matrix(struct mpu6050_measure_value *v) {
+void MPU6050_cal_rotation_matrix(struct cube *v) {
     float *q = v->q;
     float *m = v->m;
 
@@ -229,7 +229,7 @@ void MPU6050_cal_rotation_matrix(struct mpu6050_measure_value *v) {
 /*
  * MPU6050_cal_rpy - 计算姿态角
  */
-void MPU6050_cal_rpy(struct mpu6050_measure_value *v) {
+void MPU6050_cal_rpy(struct cube *v) {
     float *m = v->m;
 
     float tmp = atan2(m[2 * 3 + 1], m[2 * 3 + 2])* RAD_TO_DEG;	// roll
@@ -247,7 +247,7 @@ void MPU6050_cal_rpy(struct mpu6050_measure_value *v) {
 /*
  * MPU6050_cal_rpy_rate - 对陀螺仪数据进行5点平滑滤波作为姿态角速率
  */
-void MPU6050_cal_rpy_rate(struct mpu6050_measure_value *v) {
+void MPU6050_cal_rpy_rate(struct cube *v) {
     double roll, pitch, yaw;
 
     roll = v->gyro[0] / (double)Gyro_2000_Scale_Factor;
@@ -270,7 +270,7 @@ void MPU6050_cal_rpy_rate(struct mpu6050_measure_value *v) {
 /*
  * MPU6050_cal_body_acc - 对加速度计数据进行8点平滑滤波机体坐标系下加速度
  */
-void MPU6050_cal_body_acc(struct mpu6050_measure_value *v) {
+void MPU6050_cal_body_acc(struct cube *v) {
     double x = (double)(v->accel[0]) / Accel_2_Scale_Factor;
     double y = (double)(v->accel[1]) / Accel_2_Scale_Factor;
     double z = (double)(v->accel[2]) / Accel_2_Scale_Factor;
@@ -290,7 +290,7 @@ void MPU6050_cal_body_acc(struct mpu6050_measure_value *v) {
 /*
 * MPU6050_cal_world_acc - 计算世界坐标系下加速度
 */
-void MPU6050_cal_world_acc(struct mpu6050_measure_value *v) {
+void MPU6050_cal_world_acc(struct cube *v) {
     float *m = v->m;
     float *ab = &(v->xb_acc);
     float *an = &(v->xn_acc);
@@ -306,20 +306,20 @@ void mpu6050_calibrate(void) {
 
     for (int i = 0; i < CALIBTIMES; i++) {
         while (!(mpu6050_read_uint8(&gMpu6050, 0x3A) & 0x01));
-        while (MPU6050_get_value(&gImuValue));
+        while (MPU6050_get_value(&gCube));
 
-        MPU6050_cal_quat(&gImuValue);
-        MPU6050_cal_rotation_matrix(&gImuValue);
-        MPU6050_cal_body_acc(&gImuValue);
-        MPU6050_cal_world_acc(&gImuValue);
+        MPU6050_cal_quat(&gCube);
+        MPU6050_cal_rotation_matrix(&gCube);
+        MPU6050_cal_body_acc(&gCube);
+        MPU6050_cal_world_acc(&gCube);
 
-        sum[0] += gImuValue.xn_acc;
-        sum[1] += gImuValue.yn_acc;
-        sum[2] += gImuValue.zn_acc;
+        sum[0] += gCube.xn_acc;
+        sum[1] += gCube.yn_acc;
+        sum[2] += gCube.zn_acc;
     }
-    gImuValue.xn_acc_bias = sum[0] / CALIBTIMES;
-    gImuValue.yn_acc_bias = sum[1] / CALIBTIMES;
-    gImuValue.zn_acc_bias = sum[2] / CALIBTIMES;
+    gCube.xn_acc_bias = sum[0] / CALIBTIMES;
+    gCube.yn_acc_bias = sum[1] / CALIBTIMES;
+    gCube.zn_acc_bias = sum[2] / CALIBTIMES;
 }
 
 
@@ -327,15 +327,15 @@ void mpu6050_calibrate(void) {
  * MPU6050_Pose - 获取MPU6050的姿态角和角速率
  */
 void mpu6050_pose(void) {
-    while (MPU6050_get_value(&gImuValue));
+    while (MPU6050_get_value(&gCube));
     
-    MPU6050_cal_quat(&gImuValue);
-    MPU6050_cal_rotation_matrix(&gImuValue);
-    MPU6050_cal_rpy(&gImuValue);
+    MPU6050_cal_quat(&gCube);
+    MPU6050_cal_rotation_matrix(&gCube);
+    MPU6050_cal_rpy(&gCube);
 
-    MPU6050_cal_rpy_rate(&gImuValue);
-    MPU6050_cal_body_acc(&gImuValue);
-    MPU6050_cal_world_acc(&gImuValue);
+    MPU6050_cal_rpy_rate(&gCube);
+    MPU6050_cal_body_acc(&gCube);
+    MPU6050_cal_world_acc(&gCube);
     
 }
 

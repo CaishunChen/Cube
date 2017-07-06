@@ -79,7 +79,9 @@ struct mpu6050 gMpu6050 = {
     .i2c = &gI2C
 };
 
-struct mpu6050_measure_value gImuValue;
+struct cube gCube = {
+    .name = "Cube"
+};
 
 /***********************************************************/
 /*                          µç»ú                           */

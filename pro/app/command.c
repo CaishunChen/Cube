@@ -1,63 +1,38 @@
 #include <command.h>
-
+#include <xtos.h>
+#include <types.h>
+#include <gVariables.h>
+#include <stdio.h>
 /*
  * 指令缓存队列
  */
 Queue_T *g_cmdQueue = 0;
-uint16 g_cmdCode = 0x00;
-uint16 g_cmdLen = 0x00;
-/*******************************************************/
-/*                       响应数据缓存                   */
-/*******************************************************/
-#define RESBUF_PARAM_SIZE 64
-struct resData {
-    uint16 frame;
-    uint16 len;
-    uint16 cmdCode;
-    uint8 params[RESBUF_PARAM_SIZE];
-};
-union resBuf {
-    uint8 bytes[RESBUF_PARAM_SIZE + 6];
-    struct resData data;
-};
-void _init_resBuf(union resBuf *rbuf) {
-    rbuf->data.frame = 0x1400;
-    rbuf->data.len = 0x0006;
-    rbuf->data.cmdCode = 0x1400;
-    for (int i = 0; i < RESBUF_PARAM_SIZE; i++)
-        rbuf->data.params[i] = 0;
-}
-union resBuf g_resBuf;
+union Data16 _startAddr;
+union Data16 _cmdLen;
+
+#define ErrorNoErr              0
+#define ErrorStartAddrTooLarge  1
+uint8 _error = ErrorNoErr;
+
 uint8(*g_resFunc)(const uint8 *buf, uint32 len);
-/*
- * Response - 返回数据
- *
- * @code: 响应指令代码
- * @buf: 数据缓存
- * @len: 数据大小
- */
-uint8 Response(uint16 code, uint8 *buf, uint16 len) {
-    _init_resBuf(&g_resBuf);
-    g_resBuf.data.cmdCode = code;
-    g_resBuf.data.len = len + 6;
 
-    for (int i = 0; i < len; i++)
-        g_resBuf.data.params[i] = buf[i];
+/*******************************************************/
 
-    return g_resFunc(g_resBuf.bytes, g_resBuf.data.len);
+static uint8 _get_byte(void) {
+    uint8 result;
+    while (is_queue_empty(g_cmdQueue)) {
+        xtos_schedule();
+    }
+    dequeue(g_cmdQueue, &result);
+    return result;
 }
 
-/*******************************************************/
-/*                    查询指令                          */
-/*******************************************************/
-
-int Query_Id(void) {
-    return Response(0x0000, "Cube", 4);
+static void _send_datas(void) {
+    uint16 len = sizeof(gCube) - _startAddr.half_word;
+    len = (_cmdLen.half_word > len) ? len : _cmdLen.half_word;
+    uint8 *addr = (uint8*)&gCube;
+    g_resFunc(addr + _startAddr.half_word, len);
 }
-
-
-
-/*******************************************************/
 
 /*
  * cmd_init - 初始化指令系统
@@ -67,36 +42,49 @@ int Query_Id(void) {
  */
 void cmd_init(Queue_T *q, uint8(*resFunc)(const uint8 *buf, uint32 len)) {
     g_cmdQueue = q;
-    g_cmdCode = 0x00;
-    g_cmdLen = 0x00;
+    _startAddr.half_word = sizeof(gCube);
+    _cmdLen.half_word = 0x00;
 
-    _init_resBuf(&g_resBuf);
     g_resFunc = resFunc;
 }
 
+
 void Parse_Command(void) {
-    uint8 *tmp = (uint8 *)(&g_cmdCode);
-    for (int i = 0; i < 2; i++) {
-        while (is_queue_empty(g_cmdQueue));
-        dequeue(g_cmdQueue, &tmp[i]);
+    while (0x55 != _get_byte());
+    while (0xAA != _get_byte());
+
+    _startAddr.byte[0] = _get_byte();
+    _startAddr.byte[1] = _get_byte();
+
+    if (_startAddr.half_word >= sizeof(gCube)) {
+        _error = ErrorStartAddrTooLarge;
+        return;
     }
 
-    tmp = (uint8 *)(&g_cmdLen);
-    for (int i = 0; i < 2; i++) {
-        while (is_queue_empty(g_cmdQueue));
-        dequeue(g_cmdQueue, &tmp[i]);
-    }
+    _cmdLen.byte[0] = _get_byte();
+    _cmdLen.byte[1] = _get_byte();
 }
 
 void Exec_Command(void) {
-    switch (g_cmdCode) {
-    case 0x0000:
-        Query_Id(); break;
+    uint16 tmp = 0xAA55;
+
+    g_resFunc((uint8*)&tmp, 2);
+    g_resFunc(_startAddr.byte, 2);
+    g_resFunc(_cmdLen.byte, 2);
+
+    if (_startAddr.half_word >= sizeof(gCube)) {
+        g_resFunc(&_error, 1);
+        return;
+    }
+
+    if (!(0x1000 & _startAddr.half_word)) {
+        g_resFunc(&_error, 1);
+        _send_datas();
     }
 }
 
 void Clear_Command(void) {
-    g_cmdCode = 0x00;
-    g_cmdLen = 0x00;
+    _startAddr.half_word = sizeof(gCube);
+    _cmdLen.half_word = 0x00;
 }
 
