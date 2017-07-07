@@ -9,6 +9,7 @@
 Queue_T *g_cmdQueue = 0;
 union Data16 _startAddr;
 union Data16 _cmdLen;
+bool _isWriteCmd;
 
 #define ErrorNoErr              0
 #define ErrorStartAddrTooLarge  1
@@ -34,6 +35,22 @@ static void _send_datas(void) {
     g_resFunc(addr + _startAddr.half_word, len);
 }
 
+static void _receive_datas(void) {
+    uint16 len = sizeof(gCube) - _startAddr.half_word;
+    len = (_cmdLen.half_word > len) ? len : _cmdLen.half_word;
+    uint8 *buf = (uint8*)&gCube;
+    uint16 add = _startAddr.half_word;
+    for (int i = 0; i < len; i++) {
+        uint8 tmp = _get_byte();
+        add = i + _startAddr.half_word;
+        if (add < CUBE_WRITABLE_ADDR)
+            continue;
+        buf[add] = tmp;
+    }
+
+    return;
+}
+
 /*
  * cmd_init - 初始化指令系统
  *
@@ -56,6 +73,9 @@ void Parse_Command(void) {
     _startAddr.byte[0] = _get_byte();
     _startAddr.byte[1] = _get_byte();
 
+    _isWriteCmd = (0x8000 & _startAddr.half_word) ? TRUE : FALSE;
+    _startAddr.half_word &= 0x7FFF;
+
     if (_startAddr.half_word >= sizeof(gCube)) {
         _error = ErrorStartAddrTooLarge;
         return;
@@ -77,7 +97,10 @@ void Exec_Command(void) {
         return;
     }
 
-    if (!(0x1000 & _startAddr.half_word)) {
+    if (_isWriteCmd) {
+        g_resFunc(&_error, 1);
+        _receive_datas();
+    } else {
         g_resFunc(&_error, 1);
         _send_datas();
     }

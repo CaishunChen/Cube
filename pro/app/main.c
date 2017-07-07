@@ -70,6 +70,12 @@ void taska() {
 void taskb() {
     printf("\r\n sizeof(gCube) = %d\r\n", sizeof(gCube));
     while (1) {
+        //uint8 result;
+        //while (is_queue_empty(&gU1RxQ)) {
+        //    xtos_schedule();
+        //}
+        //dequeue(&gU1RxQ, &result);
+        //uart_send_byte(USART1, result);
         Parse_Command();
         Exec_Command();
         Clear_Command();

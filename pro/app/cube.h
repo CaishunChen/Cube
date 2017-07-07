@@ -4,43 +4,47 @@
 #include <MPU6050.h>
 
 struct cube {
-    uint8 name[8];  // 名称
+    short gyro[3];  // 0
+    short accel[3]; // 6
+    long quat[4];   // 12
 
-    short gyro[3];
-    short accel[3];
-    long quat[4];
+    float q[4];     // 28
+    float m[9];     // 44 旋转矩阵
 
-    float q[4];
-    float m[9];     // 旋转矩阵
+    float roll;     // 80
+    float pitch;    // 84
+    float yaw;      // 88
 
-    float roll;
-    float pitch;
-    float yaw;
+    float roll_rate;    // 92
+    float pitch_rate;   // 96
+    float yaw_rate;     // 100
 
-    float roll_rate;
-    float pitch_rate;
-    float yaw_rate;
+    float xb_acc;       // 104 机体坐标系加速度
+    float yb_acc;       // 108
+    float zb_acc;       // 112
 
-    float xb_acc;    // 机体坐标系加速度
-    float yb_acc;
-    float zb_acc;
+    float xn_acc;       // 116 世界坐标系加速度
+    float yn_acc;       // 120
+    float zn_acc;       // 124
 
-    float xn_acc;    // 世界坐标系加速度
-    float yn_acc;
-    float zn_acc;
+    float xn_acc_bias;  // 128 世界坐标系下加速度计重力零偏
+    float yn_acc_bias;  // 132
+    float zn_acc_bias;  // 136
 
-    float xn_acc_bias;  // 世界坐标系下加速度计重力零偏
-    float yn_acc_bias;
-    float zn_acc_bias;
+    float vx;           // 140 速度
+    float vy;           // 144
+    float vz;           // 148
 
-    float vx;           // 速度
-    float vy;
-    float vz;
+    float rx;           // 152 位置
+    float ry;           // 156
+    float rz;           // 160
 
-    float rx;           // 位置
-    float ry;
-    float rz;
+    // 可写寄存器
+    uint8 name[8];      // 164 名称
+                        // 172
 };
+
+#define CUBE_WRITABLE_ADDR  164
 
 
 struct CubeDirCtrl {
