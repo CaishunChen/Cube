@@ -76,7 +76,24 @@ void taska() {
         } else if (gCube.ctrl.bits.dir_ctrl) {
             gCube.ctrl.bits.motor_ctrl = 0;
             // 方向控制操作
-            
+            if (gCube.ens.dir_en.x)
+                cube_enable_dir(&gXDir);
+            else
+                cube_disable_dir(&gXDir);
+
+            if (gCube.ens.dir_en.y)
+                cube_enable_dir(&gYDir);
+            else
+                cube_disable_dir(&gYDir);
+
+            if (gCube.ens.dir_en.z)
+                cube_enable_dir(&gZDir);
+            else
+                cube_disable_dir(&gZDir);
+
+            cube_set_dir_ctrl(&gXDir, gCube.pwms[0]);
+            cube_set_dir_ctrl(&gYDir, gCube.pwms[1]);
+            cube_set_dir_ctrl(&gZDir, gCube.pwms[2]);
         } else if (gCube.ctrl.bits.motor_ctrl) {
             for (int i = 0; i < 6; i++) {
                 gMotor[i].en[0] = (gCube.ens.all & (0x01 << i)) ? 1 : 0;

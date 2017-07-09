@@ -95,7 +95,7 @@ struct CubeDirCtrl gXDir = {
 };
 struct CubeDirCtrl gYDir = {
     &gMotor[4],
-    &gMotor[2],
+    &gMotor[1],
     0.0
 };
 struct CubeDirCtrl gZDir = {
