@@ -17,13 +17,6 @@ struct MotorCtrl {
     volatile unsigned long *en;
 };
 
-extern struct MotorCtrl motor1;
-extern struct MotorCtrl motor2;
-extern struct MotorCtrl motor3;
-extern struct MotorCtrl motor4;
-extern struct MotorCtrl motor5;
-extern struct MotorCtrl motor6;
-
 /*
  * motors_init - 初始化电机
  */

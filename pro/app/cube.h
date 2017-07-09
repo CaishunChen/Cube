@@ -3,6 +3,45 @@
 #include <motor.h>
 #include <MPU6050.h>
 
+struct cube_ctrl_bits {
+    uint8 motor_ctrl : 1;   // 控制电机，最低优先级
+    uint8 dir_ctrl : 1;     // 控制xyz, 次优先级
+    uint8 pos_ctrl : 1;     // 控制姿态和位置, 最高优先级
+    uint8 rsv : 5;          // 保留，待扩展
+};
+
+union cube_ctrl {
+    struct cube_ctrl_bits bits;
+    uint8 all;
+};
+
+struct cube_motoren_bits {
+    uint8 motor1 : 1;
+    uint8 motor2 : 1;
+    uint8 motor3 : 1;
+    uint8 motor4 : 1;
+    uint8 motor5 : 1;
+    uint8 motor6 : 1;
+    uint8 rsv : 2;
+};
+
+struct cube_diren_bits {
+    uint8 x : 1;
+    uint8 rsv0 : 1;
+    uint8 y : 1;
+    uint8 rsv1 : 1;
+    uint8 z : 1;
+    uint8 rsv2 : 3;
+};
+
+union cube_ens {
+    struct cube_motoren_bits motor_en;
+    struct cube_diren_bits dir_en;
+    uint8 all;
+};
+
+
+#pragma pack(1)
 struct cube {
     short gyro[3];  // 0
     short accel[3]; // 6
@@ -40,9 +79,13 @@ struct cube {
     float rz;           // 160
 
     // 可写寄存器
-    uint8 name[8];      // 164 名称
-                        // 172
+    uint8 name[8];          // 164 名称
+    union cube_ctrl ctrl;   // 172 控制字
+    union cube_ens ens;     // 173 电机使能,方向使能
+    float pwms[6];          // 174 电机占空比,方向占空比
+                            // 198
 };
+#pragma pack()
 
 #define CUBE_WRITABLE_ADDR  164
 

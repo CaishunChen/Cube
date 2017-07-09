@@ -8,10 +8,12 @@
  */
 void cube_init(void) {
     motors_init();
+    for (int i = 0; i < 6; i++) {
+        motor_set_pwm_duty(&gMotor[i], -0.1);
+        motor_disable(&gMotor[i]);
+    }
 
-    cube_disable_dir(&gXDir);
-    cube_disable_dir(&gYDir);
-    cube_disable_dir(&gZDir);
+    
 }
 /*
  * cube_enable_dir - 使能运动方向

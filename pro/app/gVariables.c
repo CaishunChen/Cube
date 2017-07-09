@@ -87,6 +87,7 @@ struct cube gCube = {
 /*                          µç»ú                           */
 /***********************************************************/
 struct MotorCtrl gMotor[6];
+struct MotorCtrl gDir[3];
 struct CubeDirCtrl gXDir = {
     &gMotor[3],
     &gMotor[2],

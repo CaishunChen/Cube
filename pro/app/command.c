@@ -13,6 +13,7 @@ bool _isWriteCmd;
 
 #define ErrorNoErr              0
 #define ErrorStartAddrTooLarge  1
+#define ErrorInvalidCmd         2
 uint8 _error = ErrorNoErr;
 
 uint8(*g_resFunc)(const uint8 *buf, uint32 len);
@@ -68,7 +69,8 @@ void cmd_init(Queue_T *q, uint8(*resFunc)(const uint8 *buf, uint32 len)) {
 
 void Parse_Command(void) {
     while (0x55 != _get_byte());
-    while (0xAA != _get_byte());
+    if (0xAA != _get_byte())
+        return;
 
     _startAddr.byte[0] = _get_byte();
     _startAddr.byte[1] = _get_byte();
@@ -87,9 +89,10 @@ void Parse_Command(void) {
 
 void Exec_Command(void) {
     uint16 tmp = 0xAA55;
+    uint16 add = (_isWriteCmd) ? (0x8000 | _startAddr.half_word) : _startAddr.half_word;
 
     g_resFunc((uint8*)&tmp, 2);
-    g_resFunc(_startAddr.byte, 2);
+    g_resFunc((uint8*)&add, 2);
     g_resFunc(_cmdLen.byte, 2);
 
     if (_startAddr.half_word >= sizeof(gCube)) {

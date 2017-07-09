@@ -43,6 +43,11 @@ void ctrl_routine(void) {
 
     gCube.vx += gvx;
     gCube.vy += gvy;
+
+    // 位置控制
+    if (gCube.ctrl.bits.pos_ctrl) {
+        // todo
+    }
 }
 
 /*******************************************/
@@ -63,19 +68,28 @@ void taska() {
         if (data & 0x01) {
             mpu6050_pose();
         }
+
+        if (gCube.ctrl.bits.pos_ctrl) {
+            gCube.ctrl.bits.dir_ctrl = 0;
+            gCube.ctrl.bits.motor_ctrl = 0;
+            // 位置控制操作
+        } else if (gCube.ctrl.bits.dir_ctrl) {
+            gCube.ctrl.bits.motor_ctrl = 0;
+            // 方向控制操作
+            
+        } else if (gCube.ctrl.bits.motor_ctrl) {
+            for (int i = 0; i < 6; i++) {
+                gMotor[i].en[0] = (gCube.ens.all & (0x01 << i)) ? 1 : 0;
+                motor_set_pwm_duty(&gMotor[i], gCube.pwms[i]);
+            }
+        }
         LED_2 = LED_OFF;
     }
 }
 
 void taskb() {
-    printf("\r\n sizeof(gCube) = %d\r\n", sizeof(gCube));
+    cmd_init(&gU1RxQ, usart1_send_bytes);
     while (1) {
-        //uint8 result;
-        //while (is_queue_empty(&gU1RxQ)) {
-        //    xtos_schedule();
-        //}
-        //dequeue(&gU1RxQ, &result);
-        //uart_send_byte(USART1, result);
         Parse_Command();
         Exec_Command();
         Clear_Command();
@@ -93,15 +107,8 @@ int main(void) {
     control_func = ctrl_routine;
     sys_get_time(&gTime1);
 
-    /*
-    motors_init();
-    for (int i = 0; i < 6; i++) {
-        motor_set_pwm_duty(&gMotor[i], -0.1);
-        motor_enable(&gMotor[i]);
-    }
-    */
     cube_init();
-    cmd_init(&gU1RxQ, usart1_send_bytes);
+    
     config_interruts();
 
     printf("initialize the mpu6050\r\n");
@@ -121,6 +128,10 @@ int main(void) {
     xtos_init_task_descriptor(&taskB, taskb, &taskB_Stk[TASKB_STK_SIZE - 1], 1);
     xtos_start();
 
+
+    while (1) {
+
+    }
 }
 
 
