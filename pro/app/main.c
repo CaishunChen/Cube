@@ -118,7 +118,7 @@ int main(void) {
     isStarted = FALSE;
     sys_init();
     led_init();
-    usart1_init(115200);
+    usart1_init(9600);
 
     timer_init(1000, 5000);
     control_func = ctrl_routine;

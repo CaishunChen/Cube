@@ -215,7 +215,7 @@ void MPU6050_cal_rotation_matrix(struct cube *v) {
     double q1q2 = q[1] * q[2];
     double q1q3 = q[1] * q[3];
     double q2q3 = q[2] * q[3];
-
+    /*
     m[0 * 3 + 0] = 1 - 2 * (q2q2 + q3q3);
     m[0 * 3 + 1] = 2 * (q1q2 - q0q3);
     m[0 * 3 + 2] = 2 * (q1q3 + q0q2);
@@ -225,6 +225,17 @@ void MPU6050_cal_rotation_matrix(struct cube *v) {
     m[2 * 3 + 0] = 2 * (q1q3 - q0q2);
     m[2 * 3 + 1] = 2 * (q2q3 + q0q1);
     m[2 * 3 + 2] = 1 - 2 * (q1q1 + q2q2);
+    */
+    /* pitch×ª¶¯90 */
+    m[0 * 3 + 0] = 2 * (q1q3 + q0q2);
+    m[0 * 3 + 1] = 2 * (q1q2 - q0q3);
+    m[0 * 3 + 2] = 2 * (q2q2 + q3q3) - 1;
+    m[1 * 3 + 0] = 2 * (q2q3 - q0q1);
+    m[1 * 3 + 1] = 1 - 2 * (q1q1 + q3q3);
+    m[1 * 3 + 2] = -2 * (q1q2 + q0q3);
+    m[2 * 3 + 0] = 1 - 2 * (q1q1 + q2q2);
+    m[2 * 3 + 1] = 2 * (q2q3 + q0q1);
+    m[2 * 3 + 2] = -2 * (q1q3 - q0q2);
 }
 /*
  * MPU6050_cal_rpy - ¼ÆËã×ËÌ¬½Ç
