@@ -31,23 +31,10 @@ void ctrl_routine(void) {
     gTime1.ms = time.ms;
     gTime1.us = time.us;
 
-    gvx = (gCube.xn_acc - gCube.xn_acc_bias) * fdt * 0.001f;
-    gvy = (gCube.yn_acc - gCube.yn_acc_bias) * fdt * 0.001f;
-
     if (!gCtrolStarted) {
         return;
     }
 
-    gCube.rx += gCube.vx * fdt * 0.001f;
-    gCube.ry += gCube.vy * fdt * 0.001f;
-
-    gCube.vx += gvx;
-    gCube.vy += gvy;
-
-    // 位置控制
-    if (gCube.ctrl.bits.pos_ctrl) {
-        // todo
-    }
 }
 
 /*******************************************/
@@ -69,47 +56,47 @@ void taska() {
             mpu6050_pose();
         }
 
-        if (gCube.ctrl.bits.pos_ctrl) {
-            gCube.ctrl.bits.dir_ctrl = 0;
-            gCube.ctrl.bits.motor_ctrl = 0;
-            // 位置控制操作
-        } else if (gCube.ctrl.bits.dir_ctrl) {
-            gCube.ctrl.bits.motor_ctrl = 0;
-            // 方向控制操作
-            if (gCube.ens.dir_en.x)
-                cube_enable_dir(&gXDir);
-            else
-                cube_disable_dir(&gXDir);
-
-            if (gCube.ens.dir_en.y)
-                cube_enable_dir(&gYDir);
-            else
-                cube_disable_dir(&gYDir);
-
-            if (gCube.ens.dir_en.z)
-                cube_enable_dir(&gZDir);
-            else
-                cube_disable_dir(&gZDir);
-
-            cube_set_dir_ctrl(&gXDir, gCube.pwms[0]);
-            cube_set_dir_ctrl(&gYDir, gCube.pwms[1]);
-            cube_set_dir_ctrl(&gZDir, gCube.pwms[2]);
-        } else if (gCube.ctrl.bits.motor_ctrl) {
-            for (int i = 0; i < 6; i++) {
-                gMotor[i].en[0] = (gCube.ens.all & (0x01 << i)) ? 1 : 0;
-                motor_set_pwm_duty(&gMotor[i], gCube.pwms[i]);
-            }
-        }
         LED_2 = LED_OFF;
     }
 }
 
 void taskb() {
+    uint8 cmd;
     cmd_init(&gU1RxQ, usart1_send_bytes);
+
+    cube_enable_dir(&gXDir);
+    cube_enable_dir(&gZDir);
+
     while (1) {
+        while (is_queue_empty(&gU1RxQ)) {
+            xtos_schedule();
+        }
+        dequeue(&gU1RxQ, &cmd);
+        switch (cmd) {
+        case 'F':
+            cube_set_forward_ctrl(&gXDir, 0.1);
+            break;
+        case 'B':
+            cube_set_forward_ctrl(&gXDir, -0.1);
+            break;
+        case 'L':
+            cube_set_dir_ctrl(&gZDir, 0.1);
+            break;
+        case 'R':
+            cube_set_dir_ctrl(&gZDir, -0.1);
+            break;
+        case 'O':
+            cube_set_dir_ctrl(&gZDir, 0.0);
+            break;
+        case 'P':
+            cube_set_dir_ctrl(&gXDir, 0.0);
+            break;
+        }
+        /*
         Parse_Command();
         Exec_Command();
         Clear_Command();
+        */
     }
 }
 /*******************************************/

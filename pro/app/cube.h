@@ -99,5 +99,6 @@ struct CubeDirCtrl {
 
 void cube_enable_dir(struct CubeDirCtrl *dir);
 void cube_disable_dir(struct CubeDirCtrl *dir);
+void cube_set_forward_ctrl(struct CubeDirCtrl *dir, double ctrl);
 void cube_set_dir_ctrl(struct CubeDirCtrl *dir, double ctrl);
 void cube_init(void);
