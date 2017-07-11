@@ -104,12 +104,12 @@ uint8 mpu6050_read_uint8(struct mpu6050 *mpu, uint8 reg) {
 #define RAD_TO_DEG 57.295779513082320876798154814105  // 弧度转角度的转换率
 #define DEG_TO_RAD 0.01745329251994329576923690768489 // 角度转弧度的转换率
 
-#define GYRO_FILTER_N   7
+#define GYRO_FILTER_N   10
 #define ACC_FILTER_N    10
 
-static float roll_rate_history[GYRO_FILTER_N] = { 0, 0, 0, 0, 0 };
-static float pitch_rate_history[GYRO_FILTER_N] = { 0, 0, 0, 0, 0 };
-static float yaw_rate_history[GYRO_FILTER_N] = { 0, 0, 0, 0, 0 };
+static float roll_history[GYRO_FILTER_N] = { 0, 0, 0, 0, 0 };
+static float pitch_history[GYRO_FILTER_N] = { 0, 0, 0, 0, 0 };
+static float yaw_history[GYRO_FILTER_N] = { 0, 0, 0, 0, 0 };
 static float bx_acc_history[ACC_FILTER_N] = { 0,0,0,0, 0,0,0,0 };
 static float by_acc_history[ACC_FILTER_N] = { 0,0,0,0, 0,0,0,0 };
 static float bz_acc_history[ACC_FILTER_N] = { 0,0,0,0, 0,0,0,0 };
@@ -178,6 +178,7 @@ uint8 mpu6050_init(void) {
     gCube.rx = 0;
     gCube.ry = 0;
     gCube.rz = 0;
+
     return 0;
 }
 /*
@@ -255,32 +256,10 @@ void MPU6050_cal_rpy(struct cube *v) {
     if (fabs(tmp) <= 180)
         v->yaw = tmp;
 }
-/*
- * MPU6050_cal_rpy_rate - 对陀螺仪数据进行5点平滑滤波作为姿态角速率
- */
-void MPU6050_cal_rpy_rate(struct cube *v) {
-    double roll, pitch, yaw;
-
-    roll = v->gyro[0] / (double)Gyro_2000_Scale_Factor;
-    pitch = v->gyro[1] / (double)Gyro_2000_Scale_Factor;
-    yaw = v->gyro[2] / (double)Gyro_2000_Scale_Factor;
-
-    float rate = smooth_filter(roll_rate_history, roll, GYRO_FILTER_N);
-    if (fabs(rate) <= 1000)
-        v->roll_rate = rate;
-
-    rate = smooth_filter(pitch_rate_history, pitch, GYRO_FILTER_N);
-    if (fabs(rate) <= 1000)
-        v->pitch_rate = rate;
-
-    rate = smooth_filter(yaw_rate_history, yaw, GYRO_FILTER_N);
-    if (fabs(rate) <= 1000)
-        v->yaw_rate = rate;
-}
 
 /*
- * MPU6050_cal_body_acc - 对加速度计数据进行8点平滑滤波机体坐标系下加速度
- */
+* MPU6050_cal_body_acc - 对加速度计数据进行8点平滑滤波机体坐标系下加速度
+*/
 void MPU6050_cal_body_acc(struct cube *v) {
     double x = (double)(v->accel[0]) / Accel_2_Scale_Factor;
     double y = (double)(v->accel[1]) / Accel_2_Scale_Factor;
@@ -288,7 +267,7 @@ void MPU6050_cal_body_acc(struct cube *v) {
 
     float acc = smooth_filter(bx_acc_history, x, ACC_FILTER_N);
     if (fabs(acc) <= 1000)
-        v->xb_acc = acc;
+        v->zb_acc = -acc;
 
     acc = smooth_filter(by_acc_history, y, ACC_FILTER_N);
     if (fabs(acc) <= 1000)
@@ -296,7 +275,7 @@ void MPU6050_cal_body_acc(struct cube *v) {
 
     acc = smooth_filter(bz_acc_history, z, ACC_FILTER_N);
     if (fabs(acc) <= 1000)
-        v->zb_acc = acc;
+        v->xb_acc = acc;
 }
 /*
 * MPU6050_cal_world_acc - 计算世界坐标系下加速度
@@ -310,6 +289,7 @@ void MPU6050_cal_world_acc(struct cube *v) {
     an[1] = m[1 * 3 + 0] * ab[0] + m[1 * 3 + 1] * ab[1] + m[1 * 3 + 2] * ab[2];
     an[2] = m[2 * 3 + 0] * ab[0] + m[2 * 3 + 1] * ab[1] + m[2 * 3 + 2] * ab[2];
 }
+
 
 #define CALIBTIMES 100
 void mpu6050_calibrate(void) {
@@ -334,6 +314,7 @@ void mpu6050_calibrate(void) {
 }
 
 
+
 /*
  * MPU6050_Pose - 获取MPU6050的姿态角和角速率
  */
@@ -343,10 +324,12 @@ void mpu6050_pose(void) {
     MPU6050_cal_quat(&gCube);
     MPU6050_cal_rotation_matrix(&gCube);
     MPU6050_cal_rpy(&gCube);
-
-    MPU6050_cal_rpy_rate(&gCube);
+    // 平滑滤波
+    gCube.roll = smooth_filter(roll_history, gCube.roll, GYRO_FILTER_N);
+    gCube.pitch = smooth_filter(pitch_history, gCube.pitch, GYRO_FILTER_N);
+    gCube.yaw = smooth_filter(yaw_history, gCube.yaw, GYRO_FILTER_N);
+    
     MPU6050_cal_body_acc(&gCube);
     MPU6050_cal_world_acc(&gCube);
-    
 }
 

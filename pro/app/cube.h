@@ -62,7 +62,7 @@ struct cube {
     float yb_acc;       // 108
     float zb_acc;       // 112
 
-    float xn_acc;       // 116 世界坐标系加速度
+    float xn_acc;       // 116 机体坐标系加速度去除重力
     float yn_acc;       // 120
     float zn_acc;       // 124
 

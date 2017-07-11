@@ -7,7 +7,7 @@
 #include <mpu6050.h>
 #include <cube.h>
 
-extern bool gCtrolStarted;
+extern bool gDirCtrl;
 
 extern timer_regs_t *gTimer;
 extern usart_regs_t *gUart;

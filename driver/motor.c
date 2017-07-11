@@ -4,7 +4,7 @@
 #include <motor.h>
 
 /* TODO: 以参数的形式存在 */
-#define Motor_Pwm_Pres 500
+#define Motor_Pwm_Pres 10
 #define Motor_Pwm_Period 100
 
 
